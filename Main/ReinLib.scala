@@ -34,6 +34,9 @@ class ReinLib(val mode: String) {
     case "gameoflife" => {
       env = new GameOfLife(window)
     }
+    case "2048" => {
+      env = new TwentyFortyEight(window)
+    }
   }
   println("potatis")
   env.init

@@ -1,7 +1,7 @@
 package Painting
 
 
-import java.awt.{Shape, Graphics, Graphics2D, EventQueue, Color}
+import java.awt._
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
 import java.awt.geom._
 //import java.awt._
@@ -17,7 +17,7 @@ import Main.ReinLib
 object WindowSwing {
   def main(args: Array[String]): Unit = {
 
-    val gym: ReinLib = new ReinLib("gameoflife")
+    val gym: ReinLib = new ReinLib("2048")
 
     var mouseMode = false
     while (true) {
@@ -143,6 +143,8 @@ class Panel(x: Int, y: Int) extends JPanel {
   val circles: ArrayBuffer[Shape] = ArrayBuffer.empty[Shape]
   val circleChoords = ArrayBuffer.empty[(Int, Int)]
   val circleColors = ArrayBuffer.empty[java.awt.Color]
+  val stringSquares = ArrayBuffer.empty[(String, Int, Int)]
+
   val frame = new JFrame("Rectangles")
   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   frame.add(this)
@@ -221,9 +223,23 @@ class Panel(x: Int, y: Int) extends JPanel {
       g2.fill(circles(i))
     }
 
+    val oldFont = g2.getFont
+    g2.setFont(new Font("Verdana", Font.BOLD, 42))
+    for (i <- 0 until stringSquares.length) {
+      val temp = stringSquares(i)
+
+      g2.drawString(temp._1, temp._2, temp._3)
+    }
+    g2.setFont(oldFont)
 
 
 
+
+
+  }
+
+  def addString(str: String, x: Int, y: Int): Unit = {
+    stringSquares += ((str, x, y))
   }
 
   def threadSafeUpdateWindow(): Unit = {
@@ -346,6 +362,7 @@ class Panel(x: Int, y: Int) extends JPanel {
     val curve = new QuadCurve2D.Double(x1,y1,x2,y2,x3,y3)
     shapes += curve
   }
+
 
 
 
