@@ -39,9 +39,9 @@ object GeneticSnakeSolver {
     val gym: ReinLib = new ReinLib("snake")
     val popSize = 60
 
-    val socket = new Socket("localhost", 3333)
-    val in = new DataInputStream(new BufferedInputStream(socket.getInputStream))
-    val out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream))
+//    val socket = new Socket("localhost", 3333)
+//    val in = new DataInputStream(new BufferedInputStream(socket.getInputStream))
+//    val out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream))
 
 
 
@@ -59,15 +59,15 @@ object GeneticSnakeSolver {
         do {
           Thread.sleep(100)
           val img = gym.getFrame()
-          val baos = new ByteArrayOutputStream()
-          ImageIO.write(img, "PNG", baos)
-          baos.flush()
-          val imgByte = baos.toByteArray
-          val base64Test = Base64.getEncoder.encodeToString(imgByte)
-          baos.close()
-
-          out.writeChars(base64Test + ";")
-          out.flush()
+//          val baos = new ByteArrayOutputStream()
+//          ImageIO.write(img, "PNG", baos)
+//          baos.flush()
+//          val imgByte = baos.toByteArray
+//          val base64Test = Base64.getEncoder.encodeToString(imgByte)
+//          baos.close()
+//
+//          out.writeChars(base64Test + ";")
+//          out.flush()
           val state = gym.getState()
           game = state._2
           val temp = state._1.asInstanceOf[(ArrayBuffer[(Int, Int)], (Int, Int), Int)]

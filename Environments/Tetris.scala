@@ -198,38 +198,38 @@ class Tetris(window: Panel) extends GameEnvironment {
   val GameAnimationLoop = new Timer(1000/60, new ActionListener() {
     def actionPerformed(e: ActionEvent): Unit = {
 
-          val event = events.pop()
+      val event = events.pop()
 
-          if (event != -1) {
-            event match {
-              case 1 =>
-                currentShape += 1
-              case 2 =>
-                choords = (choords._1 + 1, choords._2)
-              case 3 =>
-                currentShape -= 1
-              case 4 =>
-                choords = (choords._1 - 1, choords._2)
-              case 5 =>
-                choords = (choords._1, choords._2 + 1)
-              case 6 => {
-                do {
-                  choords = (choords._1, choords._2 + 1)
-                } while (validMove(5))
-              }
-            }
+      if (event != -1) {
+        event match {
+          case 1 =>
+            currentShape += 1
+          case 2 =>
+            choords = (choords._1 + 1, choords._2)
+          case 3 =>
+            currentShape -= 1
+          case 4 =>
+            choords = (choords._1 - 1, choords._2)
+          case 5 =>
+            choords = (choords._1, choords._2 + 1)
+          case 6 => {
+            do {
+              choords = (choords._1, choords._2 + 1)
+            } while (validMove(5))
+          }
+        }
 
-            if (currentShape > 3) {
-              currentShape = 0
-            } else if (currentShape < 0) {
-              currentShape = 3
-            }
-            validMove(event)
+        if (currentShape > 3) {
+          currentShape = 0
+        } else if (currentShape < 0) {
+          currentShape = 3
+        }
+        validMove(event)
 
-            reset()
-            paintGrid()
-            paintBlock()
-            window.repaint()
+        reset()
+        paintGrid()
+        paintBlock()
+        window.repaint()
 
       }
     }

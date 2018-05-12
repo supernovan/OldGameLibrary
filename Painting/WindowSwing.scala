@@ -17,7 +17,8 @@ import Main.ReinLib
 object WindowSwing {
   def main(args: Array[String]): Unit = {
 
-    val gym: ReinLib = new ReinLib("rushhour")
+    val gym: ReinLib = new ReinLib("gameoflife")
+
     var mouseMode = false
     while (true) {
 
