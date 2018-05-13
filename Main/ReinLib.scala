@@ -38,7 +38,7 @@ class ReinLib(val mode: String) {
       env = new TwentyFortyEight(window)
     }
   }
-  println("potatis")
+
   env.init
 
   def timeFrame(input: Int): Unit = {

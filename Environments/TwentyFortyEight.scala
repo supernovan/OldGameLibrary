@@ -16,11 +16,11 @@ import scala.util.Random
 
 class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
-  override type A = (Double, Double)
-  val board = Array.ofDim[Int](4, 4)
+  override type A = ((Array[Array[Int]]))
+  val boardOriginal = Array.ofDim[Int](4, 4)
   val colorMap = new util.HashMap[Int, java.awt.Color]()
   val rand = new Random()
-
+  var lost = false
 
 
 
@@ -48,19 +48,31 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
     do {
       x = rand.nextInt(4)
       y = rand.nextInt(4)
-    } while (board(x)(y) != 0)
+    } while (boardOriginal(x)(y) != 0)
 
     println("bläh")
     if (rand.nextInt(10) == 0) {
-      board(x)(y) = 4
+      boardOriginal(x)(y) = 4
     } else {
-      board(x)(y) = 2
+      boardOriginal(x)(y) = 2
     }
 
   }
+
+  private def copyBoard(): Array[Array[Int]] = {
+    val temp = Array.ofDim[Int](4, 4)
+    for (i <- 0 until 4) {
+      for (j <- 0 until 4) {
+        temp(i)(j) = boardOriginal(i)(j)
+      }
+    }
+    temp
+  }
   override def timeFrame(input: Int): Unit = {
 
-    val flag = moveDirection(input)
+
+
+    val flag = moveDirection(input, boardOriginal)
     if (flag) {
       println("jadu")
       newBrick()
@@ -69,52 +81,55 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
     }
 
 
+    var check = false
+    for (i <- 1 to 4) {
+      val temp = copyBoard()
+      if (moveDirection(i, temp)) {
+        check = true
+      }
+    }
+
+    if (!check) {
+      lost = true
+      println("POTATISGRATÄNG")
+    }
   }
 
-  private def moveDirection(input: Int): Boolean = {
+
+  private def moveDirection(input: Int, board:  Array[Array[Int]]): Boolean = {
     var moveLength = 0
     var flag = false
     input match {
       case 1 => {
-        for (i <- 0 until 4) {
+        println("potatis")
+        for (j <- 0 until 4) {
           moveLength = 0
-          for (j <- 0 until 4) {
+          for (i <- 0 until 4) {
             if (board(i)(j) == 0) {
               moveLength += 1
             } else {
-              board(i)(j-moveLength) = board(i)(j)
               if (moveLength > 0) {
                 flag = true
+                board(i-moveLength)(j) = board(i)(j)
+                board(i)(j) = 0
               }
             }
           }
         }
 
       }
-      case 5 => {
+      case 2 => {
+        println("korvmos")
         for (i <- 0 until 4) {
           moveLength = 0
           for (j <- 3 to 0 by -1) {
             if (board(i)(j) == 0) {
               moveLength += 1
             } else {
-              board(i)(j + moveLength) = board(i)(j)
+
               if (moveLength > 0) {
-                flag = true
-              }
-            }
-          }
-        }
-      }
-      case 2 => {
-        for (j <- 0 until 4) {
-          moveLength = 0
-          for (i <- 3 to 0 by -1) {
-            if (board(i)(j) == 0) {
-              moveLength += 1
-            } else {
-              board(i + moveLength)(j) = board(i)(j)
-              if (moveLength > 0) {
+                board(i)(j + moveLength) = board(i)(j)
+                board(i)(j) = 0
                 flag = true
               }
             }
@@ -122,14 +137,32 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
         }
       }
       case 3 => {
+        for (j <- 0 until 4) {
+          moveLength = 0
+          for (i <- 3 to 0 by -1) {
+            if (board(i)(j) == 0) {
+              moveLength += 1
+            } else {
+              if (moveLength > 0) {
+                flag = true
+                board(i+moveLength)(j) = board(i)(j)
+                board(i)(j) = 0
+              }
+            }
+          }
+        }
+      }
+      case 4 => {
         for (i <- 0 until 4) {
           moveLength = 0
           for (j <- 0 until 4) {
             if (board(i)(j) == 0) {
               moveLength += 1
             } else {
-              board(i)(j - moveLength) = board(i)(j)
+
               if (moveLength > 0) {
+                board(i)(j - moveLength) = board(i)(j)
+                board(i)(j) = 0
                 flag = true
               }
             }
@@ -137,13 +170,100 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
         }
       }
     }
-    flag
+
+    for (i <- 0 until 4) {
+      for (j <- 0 until 4) {
+        print(board(i)(j) + " ")
+      }
+      print("\n")
+    }
+    val flagTwo = mergeBricks(input, board)
+    flag || flagTwo
   }
 
-  private def mergeBricks(input: Int): Boolean = {
+  private def mergeBricks(input: Int, board:  Array[Array[Int]]): Boolean = {
+    var moveLength = 0
     var flag = false
+    var prevBrick = 0
+    input match {
+      case 1 => {
+        for (j <- 0 until 4) {
+          prevBrick = 0
+          for (i <- 0 until 4) {
+            if (prevBrick != 0 && prevBrick == board(i)(j)) {
+              board(i-1)(j) *= 2
+              board(i)(j) = 0
+              flag = true
+              for (k <- i until 3) {
+                board(k)(j) = board(k+1)(j)
+              }
+              board(3)(j) = 0
+              prevBrick = board(i)(j)
+            } else {
+              prevBrick = board(i)(j)
+            }
+          }
+        }
 
-
+      }
+      case 2 => {
+        for (i <- 0 until 4) {
+          prevBrick = 0
+          for (j <- 3 to 0 by -1) {
+            if (prevBrick != 0 && prevBrick == board(i)(j)) {
+              board(i)(j+1) *= 2
+              board(i)(j) = 0
+              flag = true
+              for (k <- j until 0 by -1) {
+                board(i)(k) = board(i)(k-1)
+              }
+              board(i)(0) = 0
+              prevBrick = board(i)(j)
+            } else {
+              prevBrick = board(i)(j)
+            }
+          }
+        }
+      }
+      case 3 => {
+        for (j <- 0 until 4) {
+          prevBrick = 0
+          for (i <- 3 to 0 by -1) {
+            if (prevBrick != 0 && prevBrick == board(i)(j)) {
+              board(i+1)(j) *= 2
+              board(i)(j) = 0
+              flag = true
+              for (k <- i until 0) {
+                board(k)(j) = board(k-1)(j)
+              }
+              board(0)(j) = 0
+              prevBrick = board(i)(j)
+            } else {
+              prevBrick = board(i)(j)
+            }
+          }
+        }
+      }
+      case 4 => {
+        for (i <- 0 until 4) {
+          prevBrick = 0
+          for (j <- 0 until 4) {
+            if (prevBrick != 0 && prevBrick == board(i)(j)) {
+              board(i)(j-1) *= 2
+              board(i)(j) = 0
+              flag = true
+              for (k <- j until 3) {
+                board(i)(k) = board(i)(k+1)
+              }
+              board(i)(3) = 0
+              prevBrick = board(i)(j)
+            } else {
+              prevBrick = board(i)(j)
+            }
+          }
+        }
+      }
+    }
 
     flag
   }
@@ -174,9 +294,9 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
   }
 
   override def reset(): Unit = {
-    for (i <- 0 until board.length) {
-      for (j <- 0 until board(i).length) {
-        board(i)(j) = 0
+    for (i <- 0 until boardOriginal.length) {
+      for (j <- 0 until boardOriginal(i).length) {
+        boardOriginal(i)(j) = 0
       }
     }
     paintBoard()
@@ -210,11 +330,11 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
 
 
-    for (i <- 0 until board.length) {
-      for (j <- 0 until board.length) {
-        window.createRectangle(xOrigin + i*blockSize + 1, yOrigin +(j+1)*blockSize -1, xOrigin + (i+1)*blockSize - 1, yOrigin +(j+1)*blockSize -1, blockSize-2, colorMap.get(board(i)(j)))
-        if (board(i)(j) != 0) {
-          window.addString(board(i)(j).toString, xOrigin + i*blockSize + blockSize/2, yOrigin + j*blockSize + blockSize/2)
+    for (i <- 0 until boardOriginal.length) {
+      for (j <- 0 until boardOriginal.length) {
+        window.createRectangle(xOrigin + j*blockSize + 1, yOrigin +(i+1)*blockSize -1, xOrigin + (j+1)*blockSize - 1, yOrigin +(i+1)*blockSize -1, blockSize-2, colorMap.get(boardOriginal(i)(j)))
+        if (boardOriginal(i)(j) != 0) {
+          window.addString(boardOriginal(i)(j).toString, xOrigin + j*blockSize + blockSize/2, yOrigin + i*blockSize + blockSize/2)
         }
 
       }
@@ -223,7 +343,7 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
   }
 
 
-  def getState(): ((Double, Double), Boolean) = {
+  def getState(): ((Array[Array[Int]]), Boolean) = {
     //    val state: RunnableFuture[Boolean] = new FutureTask[Boolean](new Callable[Boolean]() {
     //      override def call() {
     //
@@ -231,10 +351,10 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
     //      }
     //    })
     //    SwingUtilities.invokeLater(state)
-    var state = ((0.0, 0.0), false)
+    var state = (Array.empty[Array[Int]], lost)
     SwingUtilities.invokeAndWait(new Runnable {
       override def run(): Unit = {
-        //        state = ((curX, curV), gameState)
+                state = ((boardOriginal), lost)
       }
     })
     state

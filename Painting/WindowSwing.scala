@@ -4,6 +4,7 @@ package Painting
 import java.awt._
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
 import java.awt.geom._
+import javax.swing.JLayeredPane
 //import java.awt._
 import java.awt.image.BufferedImage
 import java.util.concurrent.Semaphore
@@ -145,15 +146,21 @@ class Panel(x: Int, y: Int) extends JPanel {
   val circleColors = ArrayBuffer.empty[java.awt.Color]
   val stringSquares = ArrayBuffer.empty[(String, Int, Int)]
 
+
+  val layPane = new JLayeredPane
   val frame = new JFrame("Rectangles")
+  layPane.add(this)
+  this.isOptimizedDrawingEnabled
   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   frame.add(this)
   frame.setSize(x, y)
+  frame.getContentPane
   frame.setLocationRelativeTo(null)
   frame.setVisible(true)
   frame.setFocusable(true)
   //  frame.requestFocusInWindow()
   this.grabFocus()
+
 
   val lock = new Semaphore(2)
 //  lock.acquire()
@@ -224,12 +231,14 @@ class Panel(x: Int, y: Int) extends JPanel {
     }
 
     val oldFont = g2.getFont
+    g2.setColor(java.awt.Color.BLACK)
     g2.setFont(new Font("Verdana", Font.BOLD, 42))
     for (i <- 0 until stringSquares.length) {
       val temp = stringSquares(i)
-
-      g2.drawString(temp._1, temp._2, temp._3)
+      System.out.print(temp + " ")
+      g2.drawString(temp._1, temp._2-60, temp._3+15)
     }
+
     g2.setFont(oldFont)
 
 
@@ -377,10 +386,15 @@ class Panel(x: Int, y: Int) extends JPanel {
     shapeColors.clear()
 
     lines.clear()
+    stringSquares.clear()
     //angles.clear()
     //shapes.clear()
   }
 
+
+}
+
+class MyPanel extends JPanel {
 
 }
 
