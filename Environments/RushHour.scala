@@ -202,4 +202,12 @@ class RushHour(window: Panel) extends GameEnvironment() {
     })
     state
   }
+
+  override def getInputSpace(): Array[Int] = Array(1,2,3,4)
+
+  def nextState(state: (Int, Int, Int), input: Int): ((Int, Int, Int), Boolean) = {
+
+
+    (state, gameState)
+  }
 }

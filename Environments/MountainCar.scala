@@ -50,6 +50,8 @@ class MountainCar(window: Panel) extends GameEnvironment {
     updatePaint()
   }
 
+  override def getInputSpace(): Array[Int] = Array(2, 4)
+
   override def getInput(): Int = {
     window.waitForKeyInput()
   }
@@ -174,5 +176,11 @@ class MountainCar(window: Panel) extends GameEnvironment {
     })
     state
 //    ((0,0), state.get())
+  }
+
+  def nextState(state: (Double, Double), input: Int): ((Double, Double), Boolean) = {
+
+
+    (state, gameState)
   }
 }

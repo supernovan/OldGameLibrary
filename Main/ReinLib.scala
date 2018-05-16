@@ -6,38 +6,36 @@ import java.awt.image.BufferedImage
 
 import Environments._
 import Painting.Panel
+
+import scala.reflect.ClassTag
 /**
   * Created by mattias on 2017-06-27.
   */
 class ReinLib(val mode: String) {
 
+
   val window = new Panel(800, 800)
 
-  var env: GameEnvironment = null
-
-  mode.toLowerCase match {
-    case "mountaincar" => {
-      env =new MountainCar(window)
+  val env: GameEnvironment = mode match {
+    case "gameoflife" => {
+      new GameOfLife(window)
     }
     case "invertedpendulum" => {
-      env = new InvertedPendulum(window)
+      new InvertedPendulum(window)
     }
-    case "snake" => {
-      env = new Snake(window)
+    case "mountaincar" => {
+      new MountainCar(window)
     }
-    case "tetris" => {
-      env = new Tetris(window)
-    }
-    case "rushhour" => {
-      env = new RushHour(window)
-    }
-    case "gameoflife" => {
-      env = new GameOfLife(window)
-    }
+
     case "2048" => {
-      env = new TwentyFortyEight(window)
+      new TwentyFortyEight(window)
     }
   }
+
+
+
+
+
 
   env.init
 
@@ -73,5 +71,14 @@ class ReinLib(val mode: String) {
 
   def getState(): (Any, Boolean) = {
     env.getState()
+  }
+
+  def getInputSpace(): Array[Int] = {
+    env.getInputSpace()
+  }
+
+  def simulateStep(state: env.A, input: Int): (Boolean) = {
+
+    env.nextState(state, input)._2
   }
 }

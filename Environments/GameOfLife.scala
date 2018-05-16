@@ -200,5 +200,13 @@ class GameOfLife(window: Panel) extends GameEnvironment {
     state
     //    ((0,0), state.get())
   }
+
+  def nextState(state: (Double, Double), input: Int): ((Double, Double), Boolean) = {
+
+
+    (state, true)
+  }
+
+  override def getInputSpace(): Array[Int] = Array.empty[Int]
 }
 

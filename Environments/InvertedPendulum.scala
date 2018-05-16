@@ -143,6 +143,12 @@ class InvertedPendulum(window: Panel) extends GameEnvironment {
     //    ((0,0), state.get())
   }
 
+  def nextState(state: (Double, Double), input: Int): ((Double, Double), Boolean) = {
+
+
+    (state, gameState)
+  }
+
   def reset(): Unit = {
     window.resetWindow()
   }
@@ -157,6 +163,10 @@ class InvertedPendulum(window: Panel) extends GameEnvironment {
 
   override def mouseModeInput(input: (Int, Int)): Unit = {
 
+  }
+
+  override def getInputSpace(): Array[Int] = {
+    Array(-1, 1)
   }
 
   def getFrame(): BufferedImage = {

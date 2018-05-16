@@ -16,6 +16,8 @@ trait GameEnvironment {
   def getFrame(): BufferedImage
   def releaseLock(): Unit
   def updatePaint(): Unit
-  def getState(): (A, Boolean)
+  def getState(): (Any, Boolean)
+  def nextState(state: A, input: Int): (A, Boolean)
+  def getInputSpace(): Array[Int]
 
 }

@@ -16,12 +16,12 @@ import scala.util.Random
 
 class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
-  override type A = ((Array[Array[Int]]))
+  override type A = (Array[Array[Int]])
   val boardOriginal = Array.ofDim[Int](4, 4)
   val colorMap = new util.HashMap[Int, java.awt.Color]()
   val rand = new Random()
-  var lost = false
-
+  var gameState = true
+  var score = 0
 
 
 
@@ -37,33 +37,45 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
       nbr *= 2
     }
 
-    newBrick()
+    newBrick(boardOriginal)
     updatePaint()
 
   }
 
-  private def newBrick(): Unit = {
-    var x = 0
-    var y = 0
-    do {
-      x = rand.nextInt(4)
-      y = rand.nextInt(4)
-    } while (boardOriginal(x)(y) != 0)
+  override def getInputSpace(): Array[Int] = Array(1, 2, 3, 4)
 
-    println("bläh")
-    if (rand.nextInt(10) == 0) {
-      boardOriginal(x)(y) = 4
-    } else {
-      boardOriginal(x)(y) = 2
+  private def newBrick(board: Array[Array[Int]]): Unit = {
+    var flag = true
+    for (x <- 0 until 4 if flag) {
+      for (y <- 0 until 4 if flag) {
+        if (board(x)(y) == 0) {
+          flag = false
+        }
+      }
     }
+    if (!flag) {
+      var x = 0
+      var y = 0
+      do {
+        x = rand.nextInt(4)
+        y = rand.nextInt(4)
+      } while (board(x)(y) != 0)
+
+      if (rand.nextInt(10) == 0) {
+        board(x)(y) = 4
+      } else {
+        board(x)(y) = 2
+      }
+    }
+
 
   }
 
-  private def copyBoard(): Array[Array[Int]] = {
+  private def copyBoard(board: Array[Array[Int]]): Array[Array[Int]] = {
     val temp = Array.ofDim[Int](4, 4)
     for (i <- 0 until 4) {
       for (j <- 0 until 4) {
-        temp(i)(j) = boardOriginal(i)(j)
+        temp(i)(j) = board(i)(j)
       }
     }
     temp
@@ -74,25 +86,31 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
     val flag = moveDirection(input, boardOriginal)
     if (flag) {
-      println("jadu")
-      newBrick()
+      newBrick(boardOriginal)
       paintBoard()
       window.updatePaint()
     }
 
 
+
+
+    if (!checkGameState(boardOriginal)) {
+      gameState = false
+    }
+  }
+
+  private def checkGameState(board: Array[Array[Int]]): Boolean = {
     var check = false
+
     for (i <- 1 to 4) {
-      val temp = copyBoard()
+      val temp = copyBoard(board)
       if (moveDirection(i, temp)) {
         check = true
+
       }
     }
 
-    if (!check) {
-      lost = true
-      println("POTATISGRATÄNG")
-    }
+    check
   }
 
 
@@ -101,7 +119,6 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
     var flag = false
     input match {
       case 1 => {
-        println("potatis")
         for (j <- 0 until 4) {
           moveLength = 0
           for (i <- 0 until 4) {
@@ -119,7 +136,6 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
       }
       case 2 => {
-        println("korvmos")
         for (i <- 0 until 4) {
           moveLength = 0
           for (j <- 3 to 0 by -1) {
@@ -171,18 +187,17 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
       }
     }
 
-    for (i <- 0 until 4) {
-      for (j <- 0 until 4) {
-        print(board(i)(j) + " ")
-      }
-      print("\n")
-    }
+//    for (i <- 0 until 4) {
+//      for (j <- 0 until 4) {
+//        print(board(i)(j) + " ")
+//      }
+//      print("\n")
+//    }
     val flagTwo = mergeBricks(input, board)
     flag || flagTwo
   }
 
   private def mergeBricks(input: Int, board:  Array[Array[Int]]): Boolean = {
-    var moveLength = 0
     var flag = false
     var prevBrick = 0
     input match {
@@ -233,7 +248,7 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
               board(i+1)(j) *= 2
               board(i)(j) = 0
               flag = true
-              for (k <- i until 0) {
+              for (k <- i until 0 by -1) {
                 board(k)(j) = board(k-1)(j)
               }
               board(0)(j) = 0
@@ -343,7 +358,7 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
   }
 
 
-  def getState(): ((Array[Array[Int]]), Boolean) = {
+  override def getState(): (Array[Array[Int]], Boolean) = {
     //    val state: RunnableFuture[Boolean] = new FutureTask[Boolean](new Callable[Boolean]() {
     //      override def call() {
     //
@@ -351,14 +366,20 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
     //      }
     //    })
     //    SwingUtilities.invokeLater(state)
-    var state = (Array.empty[Array[Int]], lost)
+    var state = (Array.empty[Array[Int]], gameState)
     SwingUtilities.invokeAndWait(new Runnable {
       override def run(): Unit = {
-                state = ((boardOriginal), lost)
+                state = ((boardOriginal), gameState)
       }
     })
     state
     //    ((0,0), state.get())
+  }
+
+  def nextState(state: (Array[Array[Int]]), input: Int): ((Array[Array[Int]]), Boolean) = {
+    moveDirection(input, state)
+    newBrick(state)
+    (state, checkGameState(state))
   }
 }
 
