@@ -7,7 +7,16 @@ import Painting.Panel
 
 trait GameEnvironment {
   type A <: Any
+
+  /**
+    * Initiates the board game
+    */
   def init(): Unit
+
+  /**
+    * Takes an input Int, moves a time frame and play out the move Input
+    * @param input, input which move you want to play out
+    */
   def timeFrame(input: Int): Unit
   def mouseModeInput(input: (Int, Int)): Unit
   def reset(): Unit

@@ -1,5 +1,5 @@
 import Environments.GameEnvironment
-import Main.ReinLib
+import AbstractionLayer.ReinLib
 
 object MonteCarloSearch {
   def main(args: Array[String]): Unit = {
@@ -11,7 +11,7 @@ object MonteCarloSearch {
       for (i <- 0 until expectedScore.length) {
         expectedScore(i) = (0, 0)
       }
-      for (simulationIterations <- 0 until 4000) {
+      for (simulationIterations <- 0 until 450) {
         val stateCopy: Array[Array[Int]] = gym.getState()._1.asInstanceOf[Array[Array[Int]]]
         val state = Array.ofDim[Int](4, 4)
         for (i <- 0 until 4) {

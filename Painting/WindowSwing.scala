@@ -13,7 +13,7 @@ import javax.swing.{JFrame, JPanel}
 import Environments.{GameEnvironment, MountainCar}
 
 import scala.collection.mutable.ArrayBuffer
-import Main.ReinLib
+import AbstractionLayer.ReinLib
 
 object WindowSwing {
   def main(args: Array[String]): Unit = {
