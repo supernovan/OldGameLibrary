@@ -207,6 +207,6 @@ class GameOfLife(window: Panel) extends GameEnvironment {
     (state, true)
   }
 
-  override def getInputSpace(): Array[Int] = Array.empty[Int]
+  override def getInputSpace(state: A): ArrayBuffer[Int] = ArrayBuffer.empty[Int]
 }
 

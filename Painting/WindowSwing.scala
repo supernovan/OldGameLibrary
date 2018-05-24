@@ -235,7 +235,7 @@ class Panel(x: Int, y: Int) extends JPanel {
     g2.setFont(new Font("Verdana", Font.BOLD, 42))
     for (i <- 0 until stringSquares.length) {
       val temp = stringSquares(i)
-      System.out.print(temp + " ")
+//      System.out.print(temp + " ")
       g2.drawString(temp._1, temp._2-60, temp._3+15)
     }
 

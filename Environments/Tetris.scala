@@ -484,7 +484,7 @@ class Tetris(window: Panel) extends GameEnvironment {
     })
   }
 
-  override def getInputSpace(): Array[Int] = Array(1, 2, 3, 4)
+  override def getInputSpace(state: A): ArrayBuffer[Int] = ArrayBuffer(1, 2, 3, 4)
 
   def printBoard(): Unit = {
     val temp = Array.ofDim[Int](16, 10)

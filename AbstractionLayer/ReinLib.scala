@@ -7,7 +7,8 @@ import java.awt.image.BufferedImage
 import Environments._
 import Painting.Panel
 
-import scala.reflect.ClassTag
+import scala.collection.mutable.ArrayBuffer
+
 /**
   * Created by mattias on 2017-06-27.
   */
@@ -26,9 +27,14 @@ class ReinLib(val mode: String) {
     case "mountaincar" => {
       new MountainCar(window)
     }
-
     case "2048" => {
       new TwentyFortyEight(window)
+    }
+    case "tetris" => {
+      new Tetris(window)
+    }
+    case "snake" => {
+      new Snake(window)
     }
   }
 
@@ -73,8 +79,8 @@ class ReinLib(val mode: String) {
     env.getState()
   }
 
-  def getInputSpace(): Array[Int] = {
-    env.getInputSpace()
+  def getInputSpace(state: env.A): ArrayBuffer[Int] = {
+    env.getInputSpace(state)
   }
 
   def simulateStep(state: env.A, input: Int): (Boolean) = {

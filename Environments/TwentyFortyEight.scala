@@ -42,7 +42,19 @@ class TwentyFortyEight(window: Panel) extends GameEnvironment {
 
   }
 
-  override def getInputSpace(): Array[Int] = Array(1, 2, 3, 4)
+  override def getInputSpace(state: A): ArrayBuffer[Int] = {
+    val arr = ArrayBuffer.empty[Int]
+
+    for (i <- 1 to 4) {
+      val temp = copyBoard(state)
+      if (moveDirection(i, temp)) {
+        arr += i
+      }
+    }
+
+
+    arr
+  }
 
   private def newBrick(board: Array[Array[Int]]): Unit = {
     var flag = true

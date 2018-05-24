@@ -271,7 +271,7 @@ class Snake(window: Panel) extends GameEnvironment {
     state
   }
 
-  override def getInputSpace(): Array[Int] = Array(1,2,3,4)
+  override def getInputSpace(state: A): ArrayBuffer[Int] = ArrayBuffer(1,2,3,4)
 
   def nextState(state: (ArrayBuffer[(Int, Int)], (Int, Int), Int), input: Int): ((ArrayBuffer[(Int, Int)], (Int, Int), Int), Boolean) = {
 

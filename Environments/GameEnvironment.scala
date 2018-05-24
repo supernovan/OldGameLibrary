@@ -5,6 +5,8 @@ import javax.swing.SwingUtilities
 
 import Painting.Panel
 
+import scala.collection.mutable.ArrayBuffer
+
 trait GameEnvironment {
   type A <: Any
 
@@ -27,6 +29,6 @@ trait GameEnvironment {
   def updatePaint(): Unit
   def getState(): (Any, Boolean)
   def nextState(state: A, input: Int): (A, Boolean)
-  def getInputSpace(): Array[Int]
+  def getInputSpace(state: A): ArrayBuffer[Int]
 
 }

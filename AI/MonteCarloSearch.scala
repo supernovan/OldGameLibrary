@@ -4,14 +4,15 @@ import AbstractionLayer.ReinLib
 object MonteCarloSearch {
   def main(args: Array[String]): Unit = {
     val gym = new ReinLib("2048")
-    val inputSpace = gym.getInputSpace()
+
     val rand = scala.util.Random
     while (gym.getState()._2) {
-      val expectedScore = Array.ofDim[(Int, Int)](inputSpace.length)
+      val expectedScore = Array.ofDim[(Int, Int)](4)
       for (i <- 0 until expectedScore.length) {
         expectedScore(i) = (0, 0)
       }
-      for (simulationIterations <- 0 until 450) {
+      for (simulationIterations <- 0 until 700) {
+        var testCounter = 0
         val stateCopy: Array[Array[Int]] = gym.getState()._1.asInstanceOf[Array[Array[Int]]]
         val state = Array.ofDim[Int](4, 4)
         for (i <- 0 until 4) {
@@ -24,7 +25,14 @@ object MonteCarloSearch {
         var move = 0
 
         do {
+          testCounter += 1
+
+          val inputSpace = gym.getInputSpace(state.asInstanceOf[gym.env.A])
           val input = inputSpace(rand.nextInt(inputSpace.length))
+//          if (testCounter % 300 == 0)  {
+//            println(inputSpace)
+//          }
+
           if (firstStep) {
             move = input
             firstStep = false
@@ -50,7 +58,8 @@ object MonteCarloSearch {
 
       var bestMove = -1
       var highestScore = -1
-      for (i <- 0 until inputSpace.length) {
+      for (i <- 0 until 4) {
+//        println("potatis")
         val currentMove = expectedScore(i)
         if (currentMove._1 > 0) {
           if (currentMove._2 / currentMove._1 > highestScore) {

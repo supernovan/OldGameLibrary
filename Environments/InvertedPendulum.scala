@@ -165,8 +165,8 @@ class InvertedPendulum(window: Panel) extends GameEnvironment {
 
   }
 
-  override def getInputSpace(): Array[Int] = {
-    Array(-1, 1)
+  override def getInputSpace(state: A): ArrayBuffer[Int] = {
+    ArrayBuffer(-1, 1)
   }
 
   def getFrame(): BufferedImage = {
